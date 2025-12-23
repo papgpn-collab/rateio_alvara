@@ -1,5 +1,6 @@
+
 import React, { useState, useEffect } from 'react';
-import { formatCurrency, parseCurrency } from '../utils/currency';
+import { formatCurrency, parseCurrency } from '../utils/currency.ts';
 
 interface EditableListItemProps {
     item: { descricao: string; valor: number };

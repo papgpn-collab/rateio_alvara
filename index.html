@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
   <head>
@@ -5,22 +6,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Extrator - Simulador - RATEIO</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
-  <script type="importmap">
+    <script>
+      // Garante que process.env exista sem sobrescrever valores reais injetados
+      window.process = window.process || { env: {} };
+      window.process.env = window.process.env || {};
+      
+      // Captura erros globais para diagnóstico
+      window.onerror = function(msg, url, line, col, error) {
+        console.error("Erro Detectado:", msg, "em", url, "linha:", line);
+        return false;
+      };
+    </script>
+    <script type="importmap">
 {
   "imports": {
-    "react": "https://aistudiocdn.com/react@^19.2.0",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.28.0",
-    "react-dropzone": "https://aistudiocdn.com/react-dropzone@^14.3.8",
-    "uuid": "https://aistudiocdn.com/uuid@^13.0.0"
+    "react": "https://esm.sh/react@19.0.0",
+    "react-dom": "https://esm.sh/react-dom@19.0.0",
+    "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
+    "@google/genai": "https://esm.sh/@google/genai@1.28.0",
+    "react-dropzone": "https://esm.sh/react-dropzone@14.3.8?external=react,react-dom",
+    "uuid": "https://esm.sh/uuid@13.0.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/"
   }
 }
 </script>
-</head>
-  <body>
+  </head>
+  <body class="bg-gray-50">
     <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
+    <script type="module" src="./index.tsx"></script>
   </body>
 </html>

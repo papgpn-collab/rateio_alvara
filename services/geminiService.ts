@@ -1,7 +1,6 @@
-import { GoogleGenAI, Type } from "@google/genai";
-import type { ExtractedData } from '../types';
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+import { GoogleGenAI, Type } from "@google/genai";
+import type { ExtractedData } from '../types.ts';
 
 const responseSchema = {
     type: Type.OBJECT,
@@ -42,11 +41,21 @@ const responseSchema = {
     required: ['valorBrutoReclamante', 'descontosReclamante', 'reclamadaDebitos']
 };
 
-
+/**
+ * Extracts data from Brazilian judicial calculation spreadsheets using Gemini.
+ */
 export const extractDataFromImage = async (base64ImageData: string): Promise<ExtractedData> => {
+    // A chave API é injetada via variável de ambiente process.env.API_KEY
+    const apiKey = typeof process !== 'undefined' ? process.env.API_KEY : undefined;
+    
+    if (!apiKey) {
+        throw new Error("API_KEY não configurada. Verifique as variáveis de ambiente.");
+    }
+
     try {
+        const ai = new GoogleGenAI({ apiKey });
         const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-2.5-flash-image',
             contents: {
                 parts: [
                     {
@@ -66,18 +75,17 @@ export const extractDataFromImage = async (base64ImageData: string): Promise<Ext
             },
         });
         
-        const jsonText = response.text.trim();
+        const jsonText = response.text?.trim() || "{}";
         const data = JSON.parse(jsonText);
 
-        // Data validation
-        if (!data || typeof data.valorBrutoReclamante !== 'number' || !Array.isArray(data.descontosReclamante) || !Array.isArray(data.reclamadaDebitos)) {
+        if (!data || typeof data.valorBrutoReclamante !== 'number') {
              throw new Error("A resposta da IA não corresponde ao formato esperado.");
         }
 
         return data as ExtractedData;
 
     } catch (error) {
-        console.error("Error calling Gemini API:", error);
-        throw new Error("Falha ao se comunicar com a IA. Verifique a imagem ou tente novamente.");
+        console.error("Erro na API Gemini:", error);
+        throw new Error("Falha na análise da imagem. Certifique-se de que a planilha está visível.");
     }
 };

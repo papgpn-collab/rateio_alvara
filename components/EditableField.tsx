@@ -1,5 +1,6 @@
+
 import React, { useState, useEffect } from 'react';
-import { formatCurrency, parseCurrency } from '../utils/currency';
+import { formatCurrency, parseCurrency } from '../utils/currency.ts';
 
 interface EditableFieldProps {
     label: string;
@@ -14,7 +15,6 @@ export const EditableField: React.FC<EditableFieldProps> = ({ label, value, onCh
     const [displayValue, setDisplayValue] = useState(formatCurrency(value));
 
     useEffect(() => {
-        // Update display value if the underlying numeric value changes from parent
         if (!isEditing) {
             setDisplayValue(formatCurrency(value));
         }
